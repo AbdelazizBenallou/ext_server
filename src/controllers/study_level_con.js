@@ -1,9 +1,9 @@
-const StudyYear = require("../models/StudyYear");
+const StudyLevel = require("../models/StudyLevel");
 const cache = require("../config/redis");
 
 module.exports = {
   getAll: async (req, res) => {
-    const cacheKey = "study_years_all";
+    const cacheKey = "study_level_all";
     const cacheTTL = 300;
 
     try {
@@ -20,19 +20,19 @@ module.exports = {
             count: cached.data.length,
             data: cached.data,
             cache_hit: true,
-            message: "Download link retrieved from cache",
+            message: "Level link retrieved from cache",
           });
         }
       }
 
       // 2️⃣ Fetch from DB
-      const years = await StudyYear.findAll();
+      const levels = await StudyLevel.findAll();
 
       // 3️⃣ Store in cache with TTL
       await cache.set(
         cacheKey,
         {
-          data: years,
+          data: levels,
           expires_at: Math.floor(Date.now() / 1000) + cacheTTL,
         },
         cacheTTL
@@ -41,10 +41,10 @@ module.exports = {
       // 4️⃣ Return response
       res.status(200).json({
         success: true,
-        count: years.length,
-        data: years,
+        count: levels.length,
+        data: levels,
         cache_hit: false,
-        message: "Download link retrieved from database",
+        message: "Levels link retrieved from database",
       });
     } catch (error) {
       console.error(error);
@@ -54,7 +54,6 @@ module.exports = {
       });
     }
   },
-
   getById: async (req, res) => {
     try {
       const { id } = req.params;
@@ -74,17 +73,18 @@ module.exports = {
         });
       }
 
-      const year = await StudyYear.findByPk(numericId);
-      if (!year) {
+      const level = await StudyLevel.findByPk(numericId);
+
+      if (!level) {
         return res.status(404).json({
           success: false,
-          message: "Study year not found",
+          message: "Study level not found",
         });
       }
 
       res.status(200).json({
         success: true,
-        data: year,
+        data: level,
       });
     } catch (error) {
       console.error(error);
