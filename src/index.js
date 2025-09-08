@@ -4,8 +4,9 @@ const hpp = require('hpp');
 const { default: helmet } = require('helmet');
 const apiRoutes = require('./routes/apiRoutes');
 require('./config/database');
-require('dotenv').config();
 
+require('dotenv').config();
+require("./utils/relations");
 const app = express();
 
 app.use(cors());

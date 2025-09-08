@@ -4,6 +4,9 @@ const router = express.Router();
 const limiter = require("../middlewere/rateLimiter");
 const studyYearController = require("../controllers/study_year_con");
 const studyLevelController = require("../controllers/study_level_con");
+const userController = require("../controllers/userController");
+
+router.post("/v1/login", userController.login);
 
 router.get("/v1/studyYear", studyYearController.getAll);
 router.get("/v1/studyYear/:id", studyYearController.getById);
