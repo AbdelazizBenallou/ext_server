@@ -7,14 +7,12 @@ module.exports = {
     const cacheTTL = 300;
 
     try {
-      // 1️⃣ Try reading from cache
       const cached = await cache.get(cacheKey);
       if (cached) {
         const now = Math.floor(Date.now() / 1000);
         const timeLeft = cached.expires_at - now;
 
         if (timeLeft > 120) {
-          // Only use cache if more than 2 min left
           return res.status(200).json({
             success: true,
             count: cached.data.length,
