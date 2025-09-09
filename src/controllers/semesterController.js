@@ -31,7 +31,7 @@ module.exports = {
       }
 
       const cacheKey = `study_level/${idNumber}/semesters`;
-      const cacheTTL = 300;
+      const cacheTTL = 300000;
       const cached = await cache.get(cacheKey);
 
       if (cached) {

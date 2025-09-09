@@ -4,7 +4,7 @@ const cache = require("../config/redis");
 module.exports = {
   getAll: async (req, res) => {
     const cacheKey = "study_level_all";
-    const cacheTTL = 300;
+    const cacheTTL = 500;
 
     try {
       const cached = await cache.get(cacheKey);
@@ -55,8 +55,8 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const { id } = req.params;
-
       const numericId = Number(id);
+
       if (!Number.isInteger(numericId)) {
         return res.status(400).json({
           success: false,
@@ -71,8 +71,21 @@ module.exports = {
         });
       }
 
-      const level = await StudyLevel.findByPk(numericId);
+      const cacheKey = `study_level/${numericId}`;
+      const cacheTTL = 300000;
 
+      const cached = await cache.get(cacheKey);
+      if (cached) {
+        return res.status(200).json({
+          success: true,
+          count: Array.isArray(cached.data) ? cached.data.length : 1,
+          data: cached.data,
+          cache_hit: true,
+          message: "Level retrieved from cache",
+        });
+      }
+
+      const level = await StudyLevel.findByPk(numericId);
       if (!level) {
         return res.status(404).json({
           success: false,
@@ -80,9 +93,12 @@ module.exports = {
         });
       }
 
+      await cache.set(cacheKey, { data: level }, cacheTTL);
+
       res.status(200).json({
         success: true,
         data: level,
+        cache_hit: false,
       });
     } catch (error) {
       console.error(error);

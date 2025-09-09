@@ -4,7 +4,7 @@ const cache = require("../config/redis");
 module.exports = {
   getAll: async (req, res) => {
     const cacheKey = "study_years_all";
-    const cacheTTL = 300;
+    const cacheTTL = 500;
 
     try {
       // 1️⃣ Try reading from cache
