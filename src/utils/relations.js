@@ -2,6 +2,9 @@ const User = require("../models/user");
 const Profile = require("../models/profile");
 const StudyLevel = require("../models/StudyLevel");
 const Specialization = require("../models/specializations");
+const Module = require("../models/module").model;
+const Semester = require("../models/semester").model;
+const SP_Module = require("../models/specialization_module").model;
 
 User.hasOne(Profile, {
   foreignKey: "user_id",
@@ -35,9 +38,44 @@ Profile.belongsTo(StudyLevel, {
   foreignKey: "study_level_id",
 });
 
+Semester.belongsTo(StudyLevel, {
+  foreignKey: "study_level_id",
+});
+StudyLevel.hasMany(Semester, {
+  foreignKey: "study_level_id",
+  onDelete: "CASCADE",
+});
+
+Semester.hasMany(Module, {
+  foreignKey: "semester_id",
+  onDelete: "CASCADE",
+});
+Module.belongsTo(Semester, {
+  foreignKey: "semester_id",
+});
+
+SP_Module.belongsTo(Specialization, {
+  foreignKey: "specialization_id",
+});
+Specialization.hasMany(SP_Module, {
+  foreignKey: "specialization_id",
+  onDelete: "CASCADE",
+});
+
+SP_Module.belongsTo(Module, {
+  foreignKey: "module_id",
+});
+Module.hasMany(SP_Module, {
+  foreignKey: "module_id",
+  onDelete: "CASCADE",
+});
+
 module.exports = {
   User,
   Profile,
   StudyLevel,
   Specialization,
+  Semester,
+  Module,
+  SP_Module,
 };

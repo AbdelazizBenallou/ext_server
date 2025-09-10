@@ -9,6 +9,7 @@ const userController = require("../controllers/userController");
 const requestController = require("../controllers/requestController");
 const semesterController = require("../controllers/semesterController");
 const fileTypeController = require("../controllers/fileTypeController");
+const moduleController = require("../controllers/moduleController");
 
 router.post("/v1/login", userController.login);
 
@@ -30,5 +31,12 @@ router.get(
 );
 
 router.get("/v1/modules/filesTypes", fileTypeController.getAllFileTypes);
+
+router.get("/v1/semesters/:semesterId/modules", moduleController.getModules);
+
+router.get(
+  "/v1/semesters/:semesterId/:specializationId/modules",
+  moduleController.getModules
+);
 
 module.exports = router;
