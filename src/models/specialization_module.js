@@ -34,4 +34,4 @@ const SP_Module = sequelize.define(
   }
 );
 
-module.exports = { model: SP_Module };
+module.exports = SP_Module ;

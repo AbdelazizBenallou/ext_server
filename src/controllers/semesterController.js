@@ -1,4 +1,4 @@
-const SemesterModel = require("../models/semester").model;
+const SemesterModel = require("../models/semester");
 const StudyLevelModel = require("../models/StudyLevel");
 const cache = require("../config/redis");
 

@@ -55,4 +55,4 @@ const Request = sequelize.define(
   }
 );
 
-module.exports = { model: Request };
+module.exports = Request;

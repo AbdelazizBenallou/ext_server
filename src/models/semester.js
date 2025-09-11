@@ -45,4 +45,4 @@ const Semester = sequelize.define(
   }
 );
 
-module.exports = { model: Semester };
+module.exports = Semester;

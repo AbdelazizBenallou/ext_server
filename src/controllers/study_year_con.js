@@ -26,7 +26,9 @@ module.exports = {
       }
 
       // 2️⃣ Fetch from DB
-      const years = await StudyYear.findAll();
+      const years = await StudyYear.findAll({
+        order: [["id", "DESC"]],
+      });
 
       // 3️⃣ Store in cache with TTL
       await cache.set(

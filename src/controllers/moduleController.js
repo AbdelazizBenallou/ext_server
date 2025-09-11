@@ -1,8 +1,8 @@
 const { SP_Module } = require("../utils/relations");
 
-const Module = require("../models/module").model;
-const Semester = require("../models/semester").model;
-const SpecializationModule = require("../models/specialization_module").model;
+const Module = require("../models/module");
+const Semester = require("../models/semester");
+const SpecializationModule = require("../models/specialization_module");
 module.exports = {
   getModules: async (req, res) => {
     try {

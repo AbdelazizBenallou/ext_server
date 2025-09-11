@@ -48,4 +48,4 @@ const Module = sequelize.define(
   }
 );
 
-module.exports = { model: Module };
+module.exports = Module;

@@ -2,9 +2,10 @@ const User = require("../models/user");
 const Profile = require("../models/profile");
 const StudyLevel = require("../models/StudyLevel");
 const Specialization = require("../models/specializations");
-const Module = require("../models/module").model;
-const Semester = require("../models/semester").model;
-const SP_Module = require("../models/specialization_module").model;
+const Module = require("../models/module");
+const Semester = require("../models/semester");
+const SP_Module = require("../models/specialization_module");
+const ModuleFiles = require("../models/moduleFiles");
 
 User.hasOne(Profile, {
   foreignKey: "user_id",
@@ -70,6 +71,30 @@ Module.hasMany(SP_Module, {
   onDelete: "CASCADE",
 });
 
+ModuleFiles.belongsTo(Module, {
+  foreignKey: "module_id",
+});
+Module.hasMany(ModuleFiles, {
+  foreignKey: "module_id",
+  onDelete: "CASCADE",
+});
+
+ModuleFiles.belongsTo(User, {
+  foreignKey: "uploaded_by",
+});
+User.hasMany(ModuleFiles, {
+  foreignKey: "uploaded_by",
+  onDelete: "SET NULL",
+});
+
+ModuleFiles.belongsTo(StudyLevel, {
+  foreignKey: "study_year_id",
+});
+StudyLevel.hasMany(ModuleFiles, {
+  foreignKey: "study_year_id",
+  onDelete: "CASCADE",
+});
+
 module.exports = {
   User,
   Profile,
@@ -78,4 +103,5 @@ module.exports = {
   Semester,
   Module,
   SP_Module,
+  ModuleFiles,
 };
