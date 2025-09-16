@@ -6,6 +6,8 @@ const Module = require("../models/module");
 const Semester = require("../models/semester");
 const SP_Module = require("../models/specialization_module");
 const ModuleFiles = require("../models/moduleFiles");
+const FileType = require("../models/fileType");
+const ModuleFileType = require("../models/module_typefiles");
 
 User.hasOne(Profile, {
   foreignKey: "user_id",
@@ -95,6 +97,17 @@ StudyLevel.hasMany(ModuleFiles, {
   onDelete: "CASCADE",
 });
 
+FileType.belongsToMany(Module, {
+  through: ModuleFileType,
+  foreignKey: "file_type_id",
+  otherKey: "module_id",
+});
+Module.belongsToMany(FileType, {
+  through: ModuleFileType,
+  foreignKey: "module_id",
+  otherKey: "file_type_id",
+});
+
 module.exports = {
   User,
   Profile,
@@ -104,4 +117,6 @@ module.exports = {
   Module,
   SP_Module,
   ModuleFiles,
+  FileType,
+  ModuleFileType,
 };

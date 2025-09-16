@@ -1,12 +1,38 @@
 const FileType = require("../models/fileType");
 const cache = require("../config/redis");
+const Module = require("../models/module");
+const ModuleFileType = require("../models/module_typefiles");
 
 module.exports = {
   getAllFileTypes: async (req, res) => {
-    const cacheKey = "module_file_types";
-    const cacheTTL = 300000;
-
     try {
+      const { moduleId } = req.params ?? {};
+      const cacheKey = `fileTypes:${moduleId}`;
+      const cacheTTL = 300000;
+
+      if (!moduleId) {
+        return res.status(400).json({
+          success: false,
+          message: "Module ID is required",
+        });
+      }
+      const moduleIdInt = parseInt(moduleId, 10);
+      if (isNaN(moduleIdInt) || moduleIdInt <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid Module ID",
+        });
+      }
+
+      const moduleIdExists = await Module.findByPk(moduleIdInt);
+
+      if (!moduleIdExists) {
+        return res.status(404).json({
+          success: false,
+          message: "Module ID not found",
+        });
+      }
+
       const cached = await cache.get(cacheKey);
       if (cached) {
         return res.status(200).json({
@@ -18,7 +44,18 @@ module.exports = {
         });
       }
 
-      const fileTypes = await FileType.findAll();
+      const fileTypes = await FileType.findAll({
+        include: [
+          {
+            model: Module,
+            where: { id: moduleIdInt },
+            through: { attributes: [] },
+            attributes: [],
+            required: true,
+          },
+        ],
+      });
+
       await cache.set(cacheKey, { data: fileTypes }, cacheTTL);
 
       res.status(200).json({

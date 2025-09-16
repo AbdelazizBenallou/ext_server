@@ -23,13 +23,15 @@ const FileType = sequelize.define(
       allowNull: false,
       validate: {
         len: [0, 255],
+        notNull: {
+          msg: "Description is required",
+        },
       },
     },
   },
   {
     tableName: "file_types",
     timestamps: false,
-    
   }
 );
 

@@ -1,5 +1,3 @@
-const { SP_Module } = require("../utils/relations");
-
 const Module = require("../models/module");
 const Semester = require("../models/semester");
 const SpecializationModule = require("../models/specialization_module");

@@ -31,7 +31,10 @@ router.get(
   semesterController.getSemesters
 );
 
-router.get("/v1/modules/filesTypes", fileTypeController.getAllFileTypes);
+router.get(
+  "/v1/modules/:moduleId/filesTypes",
+  fileTypeController.getAllFileTypes
+);
 
 router.get("/v1/semesters/:semesterId/modules", moduleController.getModules);
 
