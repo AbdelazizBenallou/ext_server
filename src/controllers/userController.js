@@ -36,8 +36,6 @@ module.exports = {
           "username",
           "email",
           "password_hash",
-          "role",
-          "is_active",
           "last_login",
         ],
         include: {
@@ -63,37 +61,6 @@ module.exports = {
         });
       }
 
-      const accessToken = jwt.sign(
-        { userId: user.id, role: user.role },
-        process.env.ACCESS_JWT_SECRET,
-        { expiresIn: "15m" }
-      );
-      const refreshToken = jwt.sign(
-        { userId: user.id, role: user.role },
-        process.env.REFRESH_JWT_SECRET,
-        { expiresIn: "7d" }
-      );
-
-      // Set tokens in HTTP-only cookies
-      res.cookie("access_token", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
-        maxAge: 15 * 60 * 1000, // 15 minutes
-      });
-      res.cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      });
-
-      if (!user.is_active) {
-        return res.status(403).json({
-          success: false,
-          message: "Account is inactive. Please contact support.",
-        });
-      }
 
       // Update last_login
       user.last_login = new Date();
@@ -104,8 +71,6 @@ module.exports = {
         id: user.id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        is_active: user.is_active,
         last_login: user.last_login,
         profile: user.Profile ?? null,  
       };
