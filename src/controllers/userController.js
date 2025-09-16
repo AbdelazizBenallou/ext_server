@@ -36,7 +36,6 @@ module.exports = {
           "username",
           "email",
           "password_hash",
-          "last_login",
         ],
         include: {
           model: Profile,
@@ -71,7 +70,6 @@ module.exports = {
         id: user.id,
         username: user.username,
         email: user.email,
-        last_login: user.last_login,
         profile: user.Profile ?? null,  
       };
 
