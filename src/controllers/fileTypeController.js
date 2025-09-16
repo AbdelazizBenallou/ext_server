@@ -1,7 +1,6 @@
 const FileType = require("../models/fileType");
 const cache = require("../config/redis");
 const Module = require("../models/module");
-const ModuleFileType = require("../models/module_typefiles");
 
 module.exports = {
   getAllFileTypes: async (req, res) => {

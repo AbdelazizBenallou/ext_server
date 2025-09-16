@@ -52,11 +52,6 @@ const Profile = sequelize.define(
       allowNull: true,
     },
 
-    commune: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-    },
-
     specialization_id: {
       type: DataTypes.INTEGER,
       allowNull: true,

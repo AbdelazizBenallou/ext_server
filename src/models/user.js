@@ -16,7 +16,7 @@ const User = sequelize.define(
       unique: true,
       validate: {
         notEmpty: true,
-        len: [3, 50], 
+        len: [3, 50],
       },
     },
 
@@ -35,30 +35,14 @@ const User = sequelize.define(
       allowNull: false,
     },
 
-    role: {
-      type: DataTypes.ENUM("student", "admin"),
-      allowNull: false,
-      defaultValue: "student",
-    },
-
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
-
-    last_login: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
   },
   {
     tableName: "users",
-    timestamps: false, 
+    timestamps: false,
     indexes: [
       { unique: true, fields: ["username"] },
       { unique: true, fields: ["email"] },
