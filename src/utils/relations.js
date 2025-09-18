@@ -8,6 +8,7 @@ const SP_Module = require("../models/specialization_module");
 const ModuleFiles = require("../models/moduleFiles");
 const FileType = require("../models/fileType");
 const ModuleFileType = require("../models/module_typefiles");
+const LoginHistory = require("../models/login_history");
 
 User.hasOne(Profile, {
   foreignKey: "user_id",
@@ -108,6 +109,14 @@ Module.belongsToMany(FileType, {
   otherKey: "file_type_id",
 });
 
+User.hasMany(LoginHistory, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+LoginHistory.belongsTo(User, {
+  foreignKey: "user_id",
+});
+
 module.exports = {
   User,
   Profile,
@@ -119,4 +128,5 @@ module.exports = {
   ModuleFiles,
   FileType,
   ModuleFileType,
+  LoginHistory,
 };

@@ -66,12 +66,6 @@ const Profile = sequelize.define(
       },
       onDelete: "CASCADE",
     },
-
-    gender: {
-      type: DataTypes.STRING,
-      notEmpty: false,
-      defaultValue: "male",
-    },
   },
   {
     tableName: "profiles",

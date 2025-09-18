@@ -1,11 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const hpp = require('hpp');
-const { default: helmet } = require('helmet');
-const apiRoutes = require('./routes/apiRoutes');
-require('./config/database');
+const express = require("express");
+const cors = require("cors");
+const hpp = require("hpp");
+const { default: helmet } = require("helmet");
+const apiRoutes = require("./routes/apiRoutes");
+require("./config/database");
 
-require('dotenv').config();
+require("dotenv").config();
 require("./utils/relations");
 const app = express();
 
@@ -15,10 +15,10 @@ app.use(hpp());
 
 app.use(express.json());
 
-app.use('/api',apiRoutes);
+app.use("/api", apiRoutes);
 
 PORT = process.env.DEFAULT_PORT;
 
-app.listen(PORT, '127.0.0.1', () => {
+app.listen(PORT, "127.0.0.1", () => {
   console.log(`Server running on http://127.0.0.1:${PORT}`);
 });

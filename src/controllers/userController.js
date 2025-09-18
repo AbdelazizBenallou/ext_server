@@ -12,12 +12,12 @@ const jwt = require("jsonwebtoken");
  * Body: { email, password }
  * Returns: user info with profile, study level and specialization
  */
+
 module.exports = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body ?? {};
 
-      // Basic validation
       if (!email || !password) {
         return res.status(400).json({
           success: false,
@@ -25,33 +25,20 @@ module.exports = {
         });
       }
 
-      // Normalize email
       const normalizedEmail = String(email).trim().toLowerCase();
 
-      // Find user with related profile -> study level and specialization
       const user = await User.findOne({
         where: { email: normalizedEmail },
-        attributes: [
-          "id",
-          "username",
-          "email",
-          "password_hash",
-        ],
-        include: {
-          model: Profile,
-          include: [StudyLevel, Specialization],
-        },
+        attributes: ["id", "username", "email", "password_hash"],
       });
 
-      // Do not reveal whether email or password specifically failed
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: "Invalid email or password",
+          message: "Invalid email",
         });
       }
 
-      // Verify password with argon2
       const valid = await argon2.verify(user.password_hash, password);
       if (!valid) {
         return res.status(401).json({
@@ -60,17 +47,16 @@ module.exports = {
         });
       }
 
+      const profile = await Profile.findOne({
+        where: { user_id: user.id },
+        include: [StudyLevel, Specialization],
+      });
 
-      // Update last_login
-      user.last_login = new Date();
-      await user.save();
-
-      // Prepare response (exclude password_hash)
       const responseUser = {
         id: user.id,
         username: user.username,
         email: user.email,
-        profile: user.Profile ?? null,  
+        profile: profile ?? null,
       };
 
       return res.status(200).json({

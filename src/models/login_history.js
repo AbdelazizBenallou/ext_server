@@ -5,7 +5,7 @@ const LoginHistory = sequelize.define(
   "LoginHistory",
   {
     id: {
-      tyoe: DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
