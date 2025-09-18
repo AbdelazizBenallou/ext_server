@@ -5,14 +5,11 @@ const Profile = require("../models/profile");
 const StudyLevel = require("../models/StudyLevel");
 const Specialization = require("../models/specializations");
 
-const jwt = require("jsonwebtoken");
-
 /**
  * POST /api/v1/login
  * Body: { email, password }
  * Returns: user info with profile, study level and specialization
  */
-
 module.exports = {
   login: async (req, res) => {
     try {
@@ -30,6 +27,10 @@ module.exports = {
       const user = await User.findOne({
         where: { email: normalizedEmail },
         attributes: ["id", "username", "email", "password_hash"],
+        include: {
+          model: Profile,
+          include: [StudyLevel, Specialization],
+        },
       });
 
       if (!user) {
@@ -38,8 +39,8 @@ module.exports = {
           message: "Invalid email",
         });
       }
-
       const valid = await argon2.verify(user.password_hash, password);
+
       if (!valid) {
         return res.status(401).json({
           success: false,
@@ -47,16 +48,11 @@ module.exports = {
         });
       }
 
-      const profile = await Profile.findOne({
-        where: { user_id: user.id },
-        include: [StudyLevel, Specialization],
-      });
-
       const responseUser = {
         id: user.id,
         username: user.username,
         email: user.email,
-        profile: profile ?? null,
+        profile: user.Profile ?? null,
       };
 
       return res.status(200).json({

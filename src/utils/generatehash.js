@@ -2,7 +2,7 @@ const argon2 = require("argon2");
 
 async function generateHash() {
   try {
-    const hash = await argon2.hash("1791451");
+    const hash = await argon2.hash("17914518");
     console.log("✅ Hash generated:", hash);
 
     console.log("\n📋 SQL Command:");
