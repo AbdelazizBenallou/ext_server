@@ -52,4 +52,5 @@ router.get(
   "/v1/studyYear/:studyYearId/modules/:moduleId/fileTypes/:fileTypeId/files/:fileId/download",
   moduleFilesController.getModuleFileDownload
 );
+
 module.exports = router;

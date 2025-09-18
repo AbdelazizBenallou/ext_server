@@ -25,10 +25,6 @@ const Semester = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    is_current: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
     study_level_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -35,6 +35,32 @@ const Request = sequelize.define(
         len: [10, 10],
       },
     },
+    study_level: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        notEmpty: true,
+      },
+    },
+    specialzation: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    ip_address: {
+      type: DataTypes.INET,
+      allowNull: true,
+      references: {
+        isIP: true,
+      },
+    },
+    user_agent: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,

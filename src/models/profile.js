@@ -36,11 +36,6 @@ const Profile = sequelize.define(
       allowNull: true,
     },
 
-    gender: {
-      type: DataTypes.ENUM("male", "female"),
-      allowNull: true,
-    },
-
     matricule: {
       type: DataTypes.STRING(50),
       unique: true,
@@ -70,6 +65,12 @@ const Profile = sequelize.define(
         key: "id",
       },
       onDelete: "CASCADE",
+    },
+
+    gender: {
+      type: DataTypes.STRING,
+      notEmpty: false,
+      defaultValue: "male",
     },
   },
   {

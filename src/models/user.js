@@ -33,6 +33,9 @@ const User = sequelize.define(
     password_hash: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
 
     created_at: {

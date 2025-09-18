@@ -54,10 +54,6 @@ const ModuleFiles = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    display_order: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
     study_year_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
