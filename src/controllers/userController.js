@@ -1,71 +1,20 @@
-const argon2 = require("argon2");
+const response = require("../utils/response");
+const UserService = require("../services/user_ser");
 
-const User = require("../models/user");
-const Profile = require("../models/profile");
-const StudyLevel = require("../models/StudyLevel");
-const Specialization = require("../models/specializations");
-
-/**
- * POST /api/v1/login
- * Body: { email, password }
- * Returns: user info with profile, study level and specialization
- */
 module.exports = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body ?? {};
-
-      if (!email || !password) {
-        return res.status(400).json({
-          success: false,
-          message: "Email and password are required",
-        });
-      }
-
-      const normalizedEmail = String(email).trim().toLowerCase();
-
-      const user = await User.findOne({
-        where: { email: normalizedEmail },
-        attributes: ["id", "username", "email", "password_hash"],
-        include: {
-          model: Profile,
-          include: [StudyLevel, Specialization],
-        },
-      });
-
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid email",
-        });
-      }
-      const valid = await argon2.verify(user.password_hash, password);
-
-      if (!valid) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid password",
-        });
-      }
-
-      const responseUser = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        profile: user.Profile ?? null,
-      };
-
-      return res.status(200).json({
-        success: true,
-        message: "Login successful",
-        data: responseUser,
-      });
+      const user = await UserService.login(email, password);
+      return response.successResponse(
+        res,
+        { data: user },
+        "Login successful",
+        200
+      );
     } catch (err) {
       console.error("Login error:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Server error",
-      });
+      return response.badRequestResponse(res, "Invalid credentials");
     }
   },
 };

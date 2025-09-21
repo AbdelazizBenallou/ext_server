@@ -8,8 +8,7 @@ const StudyYear = require("../models/StudyYear");
 module.exports = {
   getModuleFiles: async (req, res) => {
     const { studyYearId, moduleId, fileTypeId } = req.params ?? {};
-    const cacheKey = `studyYear/${idStudyYear}/module/${idModule}/fileType/${idFileType}/files`;
-    const cacheTTL = 300000;
+    const cacheTTL = 30;
 
     try {
       if (!studyYearId || !moduleId || !fileTypeId) {
@@ -52,6 +51,8 @@ module.exports = {
         });
       }
 
+      const cacheKey = `studyYear/${idStudyYear}/module/${idModule}/fileType/${idFileType}/files`;
+
       const cached = await cache.get(cacheKey);
       if (cached) {
         return res.status(200).json({
@@ -70,6 +71,7 @@ module.exports = {
           file_type_id: idFileType,
         },
       });
+
       await cache.set(
         cacheKey,
         {
@@ -78,6 +80,20 @@ module.exports = {
         },
         cacheTTL
       );
+
+      const individualCachePromises = moduleFiles.map(async (file) => {
+        const individualCacheKey = `file/${file.id}`;
+        await cache.set(
+          individualCacheKey,
+          {
+            data: file,
+            expires_at: Math.floor(Date.now() / 1000) + cacheTTL,
+          },
+          cacheTTL
+        );
+      });
+
+      await Promise.all(individualCachePromises);
 
       return res.status(200).json({
         success: true,

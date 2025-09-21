@@ -22,21 +22,4 @@ const redis = new Redis({
   }
 })();
 
-module.exports = {
-  get: async (key) => {
-    try {
-      const data = await redis.get(key);
-      return data ? JSON.parse(data) : null;
-    } catch (err) {
-      console.error("Error reading from cache:", err);
-      return null;
-    }
-  },
-  set: async (key, value, ttl) => {
-    try {
-      await redis.setex(key, ttl, JSON.stringify(value));
-    } catch (err) {
-      console.error("Error writing to cache:", err);
-    }
-  },
-};
+module.exports = redis;

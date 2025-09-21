@@ -1,5 +1,4 @@
 const express = require("express");
-const app = express();
 const router = express.Router();
 
 const limiter = require("../middlewere/rateLimiter");
@@ -12,7 +11,7 @@ const fileTypeController = require("../controllers/fileTypeController");
 const moduleController = require("../controllers/moduleController");
 const moduleFilesController = require("../controllers/modulefiles");
 
-router.post("/v1/login", userController.login);
+router.post("/v1/login", limiter.loginLimiter, userController.login);
 
 router.post(
   "/v1/request",
@@ -20,7 +19,7 @@ router.post(
   requestController.createRequest
 );
 
-router.get("/v1/studyYear", studyYearController.getAll);
+router.get("/v1/studyYear", limiter.normalLimiter, studyYearController.getAll);
 router.get("/v1/studyYear/:id", studyYearController.getById);
 
 router.get("/v1/studyLevel", studyLevelController.getAll);
