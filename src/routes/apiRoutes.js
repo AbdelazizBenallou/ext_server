@@ -10,8 +10,12 @@ const semesterController = require("../controllers/semesterController");
 const fileTypeController = require("../controllers/fileTypeController");
 const moduleController = require("../controllers/moduleController");
 const moduleFilesController = require("../controllers/modulefiles");
+const { authenticate }= require("../middlewere/authMiddleware");
+
 
 router.post("/v1/login", limiter.loginLimiter, userController.login);
+router.post("/v1/refresh", userController.refresh);
+router.post("/v1/logout", userController.logout);
 
 router.post(
   "/v1/request",
@@ -19,7 +23,13 @@ router.post(
   requestController.createRequest
 );
 
-router.get("/v1/studyYear", limiter.normalLimiter, studyYearController.getAll);
+router.get(
+  "/v1/studyYear",
+  authenticate,
+  limiter.normalLimiter,
+  studyYearController.getAll
+);
+
 router.get("/v1/studyYear/:id", studyYearController.getById);
 
 router.get("/v1/studyLevel", studyLevelController.getAll);

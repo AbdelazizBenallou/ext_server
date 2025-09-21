@@ -27,6 +27,19 @@ const badRequestResponse = (res, message = "Bad request") => {
   });
 };
 
+const unauthorizedResponse = (res, message = "Unauthorized") => {
+  res.status(401).json({
+    success: false,
+    message,
+  });
+};
+
+const forbiddenResponse = (res, message = "Forbidden") => {
+  res.status(403).json({
+    success: false,
+    message,
+  });
+};
 
 const cachedResponse = (res, data, cacheInfo = {}) => {
   res.status(200).json({
@@ -41,5 +54,7 @@ module.exports = {
   errorResponse,
   notFoundResponse,
   badRequestResponse,
+  unauthorizedResponse,
+  forbiddenResponse,
   cachedResponse,
 };

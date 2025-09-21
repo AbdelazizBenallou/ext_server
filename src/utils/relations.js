@@ -9,6 +9,7 @@ const ModuleFiles = require("../models/moduleFiles");
 const FileType = require("../models/fileType");
 const ModuleFileType = require("../models/module_typefiles");
 const LoginHistory = require("../models/login_history");
+const RefreshTokens = require("../models/refresh_tokens");
 
 User.hasOne(Profile, {
   foreignKey: "user_id",
@@ -117,6 +118,14 @@ LoginHistory.belongsTo(User, {
   foreignKey: "user_id",
 });
 
+User.hasMany(RefreshTokens, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+RefreshTokens.belongsTo(User, {
+  foreignKey: "user_id",
+});
+
 module.exports = {
   User,
   Profile,
@@ -129,4 +138,5 @@ module.exports = {
   FileType,
   ModuleFileType,
   LoginHistory,
+  RefreshTokens,
 };

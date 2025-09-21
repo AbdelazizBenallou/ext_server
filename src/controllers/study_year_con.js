@@ -1,5 +1,5 @@
 const studyYearService = require("../services/study_year_ser");
-const response = require("../utils/response"); // Your response helpers
+const response = require("../utils/response"); 
 
 module.exports = {
   getAll: async (req, res) => {
@@ -25,10 +25,7 @@ module.exports = {
       const { id } = req.params;
 
       if (!studyYearService.validateId(id)) {
-        return response.badRequestResponse(
-          res,
-          "Invalid ID: must be an integer between 1 and 10"
-        );
+        return response.badRequestResponse(res, "Invalid ID");
       }
 
       const year = await studyYearService.getById(id);

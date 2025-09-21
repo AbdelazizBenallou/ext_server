@@ -37,7 +37,7 @@ const studyYearService = {
     }
 
     if (numericId < 1 || numericId > 10) {
-      throw new Error("Invalid ID: must be between 1 and 10");
+      throw new Error("Invalid resource identifier");
     }
 
     const CACHE_KEY_YEAR_ID = `studyYear/${id}`;
