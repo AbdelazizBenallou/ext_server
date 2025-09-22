@@ -50,8 +50,12 @@ module.exports = {
   },
 
   refreshAccessToken: async (refreshToken) => {
+
     const tokens = await RefreshToken.findAll({
-      where: { revoked: false },
+      where: {
+        revoked: false,
+        expires_at: { [Op.gt]: new Date() },
+      },
     });
 
     let stored;
@@ -64,11 +68,7 @@ module.exports = {
     }
 
     if (!stored) {
-      throw new Error("Invalid refresh token");
-    }
-
-    if (stored.expires_at < new Date()) {
-      throw new Error("Refresh token expired");
+      throw new Error("Invalid or expired refresh token");
     }
 
     const payload = jwtUtil.verifyRefreshToken(refreshToken);
@@ -76,7 +76,7 @@ module.exports = {
     const accessToken = jwtUtil.generateAccessToken({ id: payload.id });
     return accessToken;
   },
-
+  
   revokeToken: async (refreshToken) => {
     const tokens = await RefreshToken.findAll({ where: { revoked: false } });
 

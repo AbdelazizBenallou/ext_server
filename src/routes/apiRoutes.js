@@ -11,7 +11,6 @@ const fileTypeController = require("../controllers/fileTypeController");
 const moduleController = require("../controllers/moduleController");
 const moduleFilesController = require("../controllers/modulefiles");
 const { authenticate } = require("../middlewere/authMiddleware");
-const { auth } = require("express-openid-connect");
 
 router.post("/v1/login", limiter.loginLimiter, userController.login);
 router.post("/v1/refresh", userController.refresh);
@@ -47,18 +46,21 @@ router.get(
 router.get(
   "/v1/modules/:moduleId/filesTypes",
   authenticate,
+  limiter.normalLimiter,
   fileTypeController.getAllFileTypes
 );
 
 router.get(
   "/v1/semesters/:semesterId/modules",
   authenticate,
+  limiter.normalLimiter,
   moduleController.getModules
 );
 
 router.get(
   "/v1/semesters/:semesterId/:specializationId/modules",
   authenticate,
+  limiter.normalLimiter,
   moduleController.getModules
 );
 
