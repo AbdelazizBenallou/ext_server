@@ -1,5 +1,5 @@
 const studyYearService = require("../services/study_year_ser");
-const response = require("../utils/response"); 
+const response = require("../utils/response");
 
 module.exports = {
   getAll: async (req, res) => {
@@ -36,8 +36,6 @@ module.exports = {
         200
       );
     } catch (error) {
-      console.error("Get study year by ID error:", error);
-
       if (error.message.includes("not found")) {
         response.notFoundResponse(res, error.message);
       } else if (error.message.includes("Invalid ID")) {

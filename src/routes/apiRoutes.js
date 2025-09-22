@@ -10,8 +10,8 @@ const semesterController = require("../controllers/semesterController");
 const fileTypeController = require("../controllers/fileTypeController");
 const moduleController = require("../controllers/moduleController");
 const moduleFilesController = require("../controllers/modulefiles");
-const { authenticate }= require("../middlewere/authMiddleware");
-
+const { authenticate } = require("../middlewere/authMiddleware");
+const { auth } = require("express-openid-connect");
 
 router.post("/v1/login", limiter.loginLimiter, userController.login);
 router.post("/v1/refresh", userController.refresh);
@@ -30,30 +30,41 @@ router.get(
   studyYearController.getAll
 );
 
-router.get("/v1/studyYear/:id", studyYearController.getById);
-
-router.get("/v1/studyLevel", studyLevelController.getAll);
-router.get("/v1/studyLevel/:id", studyLevelController.getById);
+router.get(
+  "/v1/studyYear/:id",
+  authenticate,
+  limiter.normalLimiter,
+  studyYearController.getById
+);
 
 router.get(
   "/v1/studyLevel/:study_level_id/semesters",
+  authenticate,
+  limiter.normalLimiter,
   semesterController.getSemesters
 );
 
 router.get(
   "/v1/modules/:moduleId/filesTypes",
+  authenticate,
   fileTypeController.getAllFileTypes
 );
 
-router.get("/v1/semesters/:semesterId/modules", moduleController.getModules);
+router.get(
+  "/v1/semesters/:semesterId/modules",
+  authenticate,
+  moduleController.getModules
+);
 
 router.get(
   "/v1/semesters/:semesterId/:specializationId/modules",
+  authenticate,
   moduleController.getModules
 );
 
 router.get(
   "/v1/studyYear/:studyYearId/modules/:moduleId/fileTypes/:fileTypeId/files",
+  authenticate,
   moduleFilesController.getModuleFiles
 );
 

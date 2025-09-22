@@ -1,55 +1,51 @@
-const Module = require("../models/module");
-const Semester = require("../models/semester");
-const SpecializationModule = require("../models/specialization_module");
+const moduleService = require("../services/module_ser");
+const response = require("../utils/response");
+
 module.exports = {
   getModules: async (req, res) => {
     try {
       const { semesterId, specializationId } = req.params;
 
       if (!semesterId) {
-        return res.status(400).json({
-          success: false,
-          message: "semesterId is required",
-        });
+        return response.badRequestResponse(res, "semesterId is required");
       }
 
-      const semester = await Semester.findByPk(semesterId);
-      if (!semester) {
-        return res.status(404).json({
-          success: false,
-          message: "Semester not found",
-        });
+      if (!moduleService.validateIds(semesterId, specializationId)) {
+        return response.badRequestResponse(res, "Invalid ID(s)");
       }
 
-      let modules;
-      if (specializationId) {
-        modules = await Module.findAll({
-          where: { semester_id: semesterId },
-          include: [
-            {
-              model: SpecializationModule,
-              where: { specialization_id: specializationId },
-              required: true,
-            },
-          ],
-        });
-      } else {
-        modules = await Module.findAll({
-          where: { semester_id: semesterId },
-        });
-      }
+      const result = await moduleService.getModules(
+        semesterId,
+        specializationId
+      );
 
-      return res.status(200).json({
-        success: true,
-        count: modules.length,
-        data: modules,
-      });
+      response.successResponse(
+        res,
+        {
+          count: result.count,
+          data: result.data,
+          source: result.source,
+        },
+        "Modules retrieved successfully",
+        200
+      );
     } catch (error) {
       console.error("Error fetching modules", error);
-      return res.status(500).json({
-        success: false,
-        message: "An error occurred while fetching modules",
-      });
+
+      if (error.message.includes("not found")) {
+        response.notFoundResponse(res, error.message);
+      } else if (
+        error.message.includes("required") ||
+        error.message.includes("Invalid")
+      ) {
+        response.badRequestResponse(res, error.message);
+      } else {
+        response.errorResponse(
+          res,
+          "An error occurred while fetching modules",
+          500
+        );
+      }
     }
   },
 };

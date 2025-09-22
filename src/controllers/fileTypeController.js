@@ -1,75 +1,53 @@
-const FileType = require("../models/fileType");
-const cache = require("../config/redis");
-const Module = require("../models/module");
+const fileTypeService = require("../services/file_type");
+const response = require("../utils/response");
 
 module.exports = {
   getAllFileTypes: async (req, res) => {
     try {
       const { moduleId } = req.params ?? {};
-      const cacheKey = `fileTypes:${moduleId}`;
-      const cacheTTL = 300000;
 
       if (!moduleId) {
-        return res.status(400).json({
-          success: false,
-          message: "Module ID is required",
-        });
-      }
-      const moduleIdInt = parseInt(moduleId, 10);
-      if (isNaN(moduleIdInt) || moduleIdInt <= 0) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid Module ID",
-        });
+        return response.badRequestResponse(res, "Module ID is required");
       }
 
-      const moduleIdExists = await Module.findByPk(moduleIdInt);
-
-      if (!moduleIdExists) {
-        return res.status(404).json({
-          success: false,
-          message: "Module ID not found",
-        });
+      if (!fileTypeService.validateModuleId(moduleId)) {
+        return response.badRequestResponse(res, "Invalid Module ID");
       }
 
-      const cached = await cache.get(cacheKey);
-      if (cached) {
-        return res.status(200).json({
-          success: true,
-          count: cached.data.length,
-          data: cached.data,
-          cache_hit: true,
-          message: "Download link retrieved from cache",
-        });
-      }
+      const result = await fileTypeService.getAllFileTypes(moduleId);
 
-      const fileTypes = await FileType.findAll({
-        include: [
-          {
-            model: Module,
-            where: { id: moduleIdInt },
-            through: { attributes: [] },
-            attributes: [],
-            required: true,
-          },
-        ],
-      });
+      const message = result.cacheHit
+        ? "File types retrieved from cache"
+        : "File types retrieved successfully";
 
-      await cache.set(cacheKey, { data: fileTypes }, cacheTTL);
-
-      res.status(200).json({
-        success: true,
-        count: fileTypes.length,
-        data: fileTypes,
-        cache_hit: false,
-        message: "File types retrieved successfully",
-      });
+      response.successResponse(
+        res,
+        {
+          count: result.count,
+          data: result.data,
+          cache_hit: result.cacheHit,
+          source: result.source,
+        },
+        message,
+        200
+      );
     } catch (error) {
       console.error("Error fetching file types:", error);
-      res.status(500).json({
-        success: false,
-        message: "An error occurred while fetching file types",
-      });
+
+      if (error.message.includes("not found")) {
+        response.notFoundResponse(res, error.message);
+      } else if (
+        error.message.includes("required") ||
+        error.message.includes("Invalid")
+      ) {
+        response.badRequestResponse(res, error.message);
+      } else {
+        response.errorResponse(
+          res,
+          "An error occurred while fetching file types",
+          500
+        );
+      }
     }
   },
 };

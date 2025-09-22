@@ -2,7 +2,7 @@ const StudyYear = require("../models/StudyYear");
 const cacheService = require("./cache_ser");
 
 const CACHE_KEY_YEARS = "study_years_all";
-const CACHE_TTL = 500;
+const CACHE_TTL = 500000;
 
 const studyYearService = {
   getAll: async () => {

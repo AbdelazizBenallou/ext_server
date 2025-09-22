@@ -5,11 +5,11 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_JWT_SECRET;
 
 module.exports = {
   generateAccessToken: (payload) => {
-    return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "1m" });
+    return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
   },
 
   generateRefreshToken: (payload) => {
-    return jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: "10m" });
+    return jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: "14d" });
   },
 
   verifyAccessToken: (token) => {
