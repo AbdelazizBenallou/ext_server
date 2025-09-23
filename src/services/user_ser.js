@@ -8,11 +8,11 @@ const validator = require("validator");
 const UserService = {
   login: async (email, password) => {
     if (!email || !password) {
-      throw new Error("Invalid credentials"); 
+      throw new Error("Invalid credentials");
     }
 
     if (!validator.isEmail(email)) {
-      throw new Error("Invalid credentials"); 
+      throw new Error("Invalid credentials");
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();

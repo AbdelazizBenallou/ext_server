@@ -1,6 +1,5 @@
 const jwtUtil = require("../utils/jwt");
 const RefreshToken = require("../models/refresh_tokens");
-const User = require("../models/user");
 const LoginHistory = require("../models/login_history");
 const argon2 = require("argon2");
 
@@ -50,7 +49,6 @@ module.exports = {
   },
 
   refreshAccessToken: async (refreshToken) => {
-
     const tokens = await RefreshToken.findAll({
       where: {
         revoked: false,
@@ -76,7 +74,7 @@ module.exports = {
     const accessToken = jwtUtil.generateAccessToken({ id: payload.id });
     return accessToken;
   },
-  
+
   revokeToken: async (refreshToken) => {
     const tokens = await RefreshToken.findAll({ where: { revoked: false } });
 
